@@ -36,21 +36,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // App Initialization
 function initializeApp() {
-    // Check if user has visited before
     const isFirstVisit = !localStorage.getItem('magicai_visited');
     if (isFirstVisit) {
         localStorage.setItem('magicai_visited', 'true');
         showWelcomeMessage();
     }
-
-    // Load user preferences
     loadUserPreferences();
-    
-    // Initialize tools
     initializeTools();
-    
-    // Check for updates
-    checkForUpdates();
 }
 
 // Event Listeners Setup
@@ -246,10 +238,7 @@ function minimizeChatWidget() {
 
 // Chat Functions
 function setupChatbot() {
-    // Initialize chat with welcome message
     addBotMessage("Hello! I'm your AI real estate assistant. Ask me anything about properties, loans, investments, or use our tools!");
-    
-    // Add quick action buttons
     addQuickActions([
         "Show me properties under 50 lakhs",
         "Calculate EMI for 30 lakhs", 
@@ -297,7 +286,7 @@ function addBotMessage(message, actions = []) {
     
     messageEl.innerHTML = `
         <div class="message-avatar">
-            <img src="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png" alt="AI">
+            <img src="https://i.postimg.cc/Px6Z8jZ9/Your-paragraph-text-1-removebg-preview.png" alt="AI">
         </div>
         <div class="message-content">
             <p>${message}</p>
@@ -327,10 +316,7 @@ function sendQuickMessage(message) {
 }
 
 function processUserMessage(message) {
-    // Show typing indicator
     showTypingIndicator();
-    
-    // Simulate AI processing delay
     setTimeout(() => {
         hideTypingIndicator();
         generateAIResponse(message);
@@ -342,7 +328,6 @@ function generateAIResponse(message) {
     let response = '';
     let actions = [];
     
-    // Intent recognition and responses
     if (lowerMessage.includes('emi') || lowerMessage.includes('loan')) {
         response = "I can help you calculate EMI and check loan eligibility. What's your loan amount and tenure?";
         actions = [
@@ -378,7 +363,6 @@ function generateAIResponse(message) {
             { action: 'neighborhood-insights', label: 'Area Insights' }
         ];
     } else {
-        // Default response with popular tools
         response = "I'm here to help with all your real estate needs! Here are some popular tools you might find useful:";
         actions = [
             { action: 'emi-calculator', label: 'EMI Calculator' },
@@ -401,7 +385,7 @@ function showTypingIndicator() {
     typingEl.className = 'message bot-message typing-indicator';
     typingEl.innerHTML = `
         <div class="message-avatar">
-            <img src="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png" alt="AI">
+            <img src="https://i.postimg.cc/Px6Z8jZ9/Your-paragraph-text-1-removebg-preview.png" alt="AI">
         </div>
         <div class="message-content">
             <div class="typing-dots">
@@ -452,7 +436,7 @@ function startVoiceRecording() {
         };
         
         recognition.onresult = function(event) {
-            const transcript = event.results[0].transcript;
+            const transcript = event.results[0][0].transcript;
             chatInput.value = transcript;
             handleSendMessage();
         };
@@ -481,30 +465,30 @@ function stopVoiceRecording() {
 
 // Tool Categories
 function setupToolCategories() {
-    // Show buyer tools by default
     switchToolCategory('buyer');
 }
 
 function switchToolCategory(category) {
+    // Remove active class from all tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Add active class to clicked tab
+    const activeTab = document.querySelector(`[data-category="${category}"]`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
+    
     // Hide all tool grids
     document.querySelectorAll('.tool-grid').forEach(grid => {
         grid.style.display = 'none';
     });
     
-    // Show selected category
+    // Show selected category grid
     const targetGrid = document.getElementById(`${category}-tools`);
     if (targetGrid) {
         targetGrid.style.display = 'grid';
-    }
-    
-    // Update active tab
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    const activeTab = document.querySelector(`[data-category="${category}"]`);
-    if (activeTab) {
-        activeTab.classList.add('active');
     }
     
     activeToolCategory = category;
@@ -516,14 +500,14 @@ function openTool(toolName) {
     if (toolData) {
         modalTitle.textContent = toolData.title;
         modalBody.innerHTML = toolData.content;
-        toolModal.style.display = 'block';
-        
-        // Initialize tool functionality
+        toolModal.classList.add('active');
+        toolModal.style.display = 'flex';
         initializeTool(toolName);
     }
 }
 
 function closeModal() {
+    toolModal.classList.remove('active');
     toolModal.style.display = 'none';
 }
 
@@ -562,9 +546,6 @@ function getToolData(toolName) {
                         <div class="result-card">
                             <h4>Total Amount</h4>
                             <div class="result-value" id="totalAmount">₹0</div>
-                        </div>
-                        <div class="breakdown-chart">
-                            <canvas id="emiChart" width="400" height="200"></canvas>
                         </div>
                     </div>
                 </div>
@@ -645,49 +626,31 @@ function getToolData(toolName) {
             title: 'Rent vs Buy Analyzer',
             content: `
                 <div class="tool-container">
-                    <div class="comparison-inputs">
-                        <div class="comparison-section">
-                            <h4><i class="fas fa-home"></i> Buying Option</h4>
-                            <div class="input-group">
-                                <label>Property Price (₹)</label>
-                                <input type="number" id="propertyPrice" placeholder="e.g., 5000000" min="500000">
-                            </div>
-                            <div class="input-group">
-                                <label>Down Payment (₹)</label>
-                                <input type="number" id="buyDownPayment" placeholder="e.g., 1000000" min="0">
-                            </div>
-                            <div class="input-group">
-                                <label>Loan Interest Rate (%)</label>
-                                <input type="number" id="buyInterestRate" placeholder="8.5" min="1" max="20" step="0.1">
-                            </div>
-                            <div class="input-group">
-                                <label>Loan Tenure (Years)</label>
-                                <input type="number" id="buyTenure" placeholder="20" min="1" max="30">
-                            </div>
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label>Property Price (₹)</label>
+                            <input type="number" id="propertyPrice" placeholder="e.g., 5000000" min="500000">
                         </div>
-                        <div class="comparison-section">
-                            <h4><i class="fas fa-key"></i> Renting Option</h4>
-                            <div class="input-group">
-                                <label>Monthly Rent (₹)</label>
-                                <input type="number" id="monthlyRent" placeholder="e.g., 25000" min="5000">
-                            </div>
-                            <div class="input-group">
-                                <label>Security Deposit (₹)</label>
-                                <input type="number" id="securityDeposit" placeholder="e.g., 100000" min="0">
-                            </div>
-                            <div class="input-group">
-                                <label>Annual Rent Increase (%)</label>
-                                <input type="number" id="rentIncrease" placeholder="5" min="0" max="20" value="5">
-                            </div>
+                        <div class="input-group">
+                            <label>Monthly Rent (₹)</label>
+                            <input type="number" id="monthlyRent" placeholder="e.g., 25000" min="5000">
                         </div>
+                        <div class="input-group">
+                            <label>Down Payment (₹)</label>
+                            <input type="number" id="buyDownPayment" placeholder="e.g., 1000000" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Loan Interest Rate (%)</label>
+                            <input type="number" id="buyInterestRate" placeholder="8.5" min="1" max="20" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Analysis Period (Years)</label>
+                            <input type="number" id="analysisPeriod" placeholder="10" min="1" max="30" value="10">
+                        </div>
+                        <button class="tool-action-btn" onclick="analyzeRentVsBuy()">
+                            <i class="fas fa-balance-scale"></i> Analyze Options
+                        </button>
                     </div>
-                    <div class="input-group">
-                        <label>Analysis Period (Years)</label>
-                        <input type="number" id="analysisPeriod" placeholder="10" min="1" max="30" value="10">
-                    </div>
-                    <button class="tool-action-btn" onclick="analyzeRentVsBuy()">
-                        <i class="fas fa-balance-scale"></i> Analyze Options
-                    </button>
                     <div class="result-section" id="rentVsBuyResults" style="display: none;">
                         <!-- Results will be populated here -->
                     </div>
@@ -722,35 +685,8 @@ function getToolData(toolName) {
                             </select>
                         </div>
                         <div class="input-group">
-                            <label>Maximum Commute Time to Work (minutes)</label>
-                            <input type="number" id="commuteTime" placeholder="45" min="0" max="180">
-                        </div>
-                        <div class="input-group">
                             <label>Work Location</label>
                             <input type="text" id="workLocation" placeholder="e.g., BKC, Lower Parel">
-                        </div>
-                        <div class="preferences-group">
-                            <label>Preferences (Select all that apply)</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="nearMetro"> Near Metro Station
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="goodSchools"> Good Schools Nearby
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="shopping"> Shopping Centers
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="hospitals"> Hospitals Nearby
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="parks"> Parks & Recreation
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="newConstruction"> New Construction
-                                </label>
-                            </div>
                         </div>
                         <button class="tool-action-btn" onclick="findPropertyMatches()">
                             <i class="fas fa-heart"></i> Find Perfect Matches
@@ -758,84 +694,6 @@ function getToolData(toolName) {
                     </div>
                     <div class="result-section" id="matchmakerResults" style="display: none;">
                         <!-- AI-matched properties will be shown here -->
-                    </div>
-                </div>
-            `
-        },
-        'neighborhood-insights': {
-            title: 'Neighborhood Insights',
-            content: `
-                <div class="tool-container">
-                    <div class="input-section">
-                        <div class="input-group">
-                            <label>Enter Location</label>
-                            <input type="text" id="locationInput" placeholder="e.g., Bandra West, Mumbai">
-                        </div>
-                        <button class="tool-action-btn" onclick="getNeighborhoodInsights()">
-                            <i class="fas fa-map-marked-alt"></i> Get Insights
-                        </button>
-                    </div>
-                    <div class="result-section" id="neighborhoodResults" style="display: none;">
-                        <!-- Neighborhood data will be populated here -->
-                    </div>
-                </div>
-            `
-        },
-        'property-comparison': {
-            title: 'Property Comparison Tool',
-            content: `
-                <div class="tool-container">
-                    <div class="comparison-setup">
-                        <p>Compare up to 3 properties side by side</p>
-                        <button class="add-property-btn" onclick="addPropertyComparison()">
-                            <i class="fas fa-plus"></i> Add Property
-                        </button>
-                    </div>
-                    <div class="properties-comparison" id="propertiesComparison">
-                        <!-- Property comparison cards will be added here -->
-                    </div>
-                    <div class="comparison-results" id="comparisonResults" style="display: none;">
-                        <!-- Comparison analysis will be shown here -->
-                    </div>
-                </div>
-            `
-        },
-        'price-prediction': {
-            title: 'AI Price Prediction Tool',
-            content: `
-                <div class="tool-container">
-                    <div class="input-section">
-                        <div class="input-group">
-                            <label>Property Location</label>
-                            <input type="text" id="predictionLocation" placeholder="e.g., Andheri East, Mumbai">
-                        </div>
-                        <div class="input-group">
-                            <label>Property Type</label>
-                            <select id="predictionPropertyType">
-                                <option value="apartment">Apartment</option>
-                                <option value="villa">Villa/House</option>
-                                <option value="commercial">Commercial</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Current Property Value (₹)</label>
-                            <input type="number" id="currentValue" placeholder="e.g., 5000000" min="500000">
-                        </div>
-                        <div class="input-group">
-                            <label>Prediction Period</label>
-                            <select id="predictionPeriod">
-                                <option value="1">1 Year</option>
-                                <option value="3">3 Years</option>
-                                <option value="5" selected>5 Years</option>
-                                <option value="10">10 Years</option>
-                            </select>
-                        </div>
-                        <button class="tool-action-btn" onclick="predictPrices()">
-                            <i class="fas fa-chart-line"></i> Predict Future Prices
-                        </button>
-                    </div>
-                    <div class="result-section" id="predictionResults" style="display: none;">
-                        <!-- Price predictions will be shown here -->
                     </div>
                 </div>
             `
@@ -851,15 +709,11 @@ function getToolData(toolName) {
                         </div>
                         <div class="input-group">
                             <label>Monthly Rental Income (₹)</label>
-                            <input type="number" id="monthlyRent" placeholder="e.g., 25000" min="0">
+                            <input type="number" id="rentalIncome" placeholder="e.g., 25000" min="0">
                         </div>
                         <div class="input-group">
                             <label>Annual Maintenance Cost (₹)</label>
                             <input type="number" id="maintenanceCost" placeholder="e.g., 50000" min="0">
-                        </div>
-                        <div class="input-group">
-                            <label>Property Tax (Annual) (₹)</label>
-                            <input type="number" id="propertyTax" placeholder="e.g., 25000" min="0">
                         </div>
                         <div class="input-group">
                             <label>Expected Annual Appreciation (%)</label>
@@ -878,138 +732,13 @@ function getToolData(toolName) {
                     </div>
                 </div>
             `
-        },
-        'growth-heatmap': {
-            title: 'Growth Areas Heatmap',
-            content: `
-                <div class="tool-container">
-                    <div class="input-section">
-                        <div class="input-group">
-                            <label>Select City</label>
-                            <select id="heatmapCity">
-                                <option value="mumbai">Mumbai</option>
-                                <option value="delhi">Delhi NCR</option>
-                                <option value="bangalore">Bangalore</option>
-                                <option value="pune">Pune</option>
-                                <option value="hyderabad">Hyderabad</option>
-                                <option value="chennai">Chennai</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Investment Budget Range (₹)</label>
-                            <select id="heatmapBudget">
-                                <option value="0-2000000">Under 20 Lakhs</option>
-                                <option value="2000000-5000000">20L - 50L</option>
-                                <option value="5000000-10000000" selected>50L - 1Cr</option>
-                                <option value="10000000-20000000">1Cr - 2Cr</option>
-                                <option value="20000000+">Above 2Cr</option>
-                            </select>
-                        </div>
-                        <button class="tool-action-btn" onclick="generateHeatmap()">
-                            <i class="fas fa-fire"></i> Generate Heatmap
-                        </button>
-                    </div>
-                    <div class="result-section" id="heatmapResults" style="display: none;">
-                        <!-- Heatmap visualization will be shown here -->
-                    </div>
-                </div>
-            `
-        },
-        'rental-forecaster': {
-            title: 'Rental Income Forecaster',
-            content: `
-                <div class="tool-container">
-                    <div class="input-section">
-                        <div class="input-group">
-                            <label>Property Location</label>
-                            <input type="text" id="rentalLocation" placeholder="e.g., Powai, Mumbai">
-                        </div>
-                        <div class="input-group">
-                            <label>Property Type & Size</label>
-                            <select id="rentalPropertyType">
-                                <option value="1bhk">1 BHK Apartment</option>
-                                <option value="2bhk" selected>2 BHK Apartment</option>
-                                <option value="3bhk">3 BHK Apartment</option>
-                                <option value="4bhk">4+ BHK Apartment</option>
-                                <option value="villa">Independent House/Villa</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Current Market Rent (₹/month)</label>
-                            <input type="number" id="currentRent" placeholder="e.g., 30000" min="5000">
-                        </div>
-                        <div class="input-group">
-                            <label>Forecast Period</label>
-                            <select id="forecastPeriod">
-                                <option value="2">2 Years</option>
-                                <option value="5" selected>5 Years</option>
-                                <option value="10">10 Years</option>
-                            </select>
-                        </div>
-                        <button class="tool-action-btn" onclick="forecastRental()">
-                            <i class="fas fa-chart-line"></i> Forecast Rental Growth
-                        </button>
-                    </div>
-                    <div class="result-section" id="rentalResults" style="display: none;">
-                        <!-- Rental forecast will be shown here -->
-                    </div>
-                </div>
-            `
-        },
-        'development-tracker': {
-            title: 'Future Development Tracker',
-            content: `
-                <div class="tool-container">
-                    <div class="input-section">
-                        <div class="input-group">
-                            <label>Search Location</label>
-                            <input type="text" id="developmentLocation" placeholder="e.g., Thane, Mumbai">
-                        </div>
-                        <div class="input-group">
-                            <label>Development Type</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="metroLines" checked> Metro/Railway Lines
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="highways" checked> Highways & Roads
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="airports"> Airports
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="malls"> Shopping Malls
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="itParks"> IT Parks/SEZ
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="schools"> Educational Institutes
-                                </label>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <label>Timeline</label>
-                            <select id="developmentTimeline">
-                                <option value="1">Next 1 Year</option>
-                                <option value="3" selected>Next 3 Years</option>
-                                <option value="5">Next 5 Years</option>
-                                <option value="10">Next 10 Years</option>
-                            </select>
-                        </div>
-                        <button class="tool-action-btn" onclick="trackDevelopments()">
-                            <i class="fas fa-road"></i> Track Future Developments
-                        </button>
-                    </div>
-                    <div class="result-section" id="developmentResults" style="display: none;">
-                        <!-- Development tracking results will be shown here -->
-                    </div>
-                </div>
-            `
         }
     };
     
-    return tools[toolName] || null;
+    return tools[toolName] || {
+        title: 'Tool Under Development',
+        content: '<div class="tool-container"><p>This tool is currently under development. Please check back soon!</p></div>'
+    };
 }
 
 // Tool Calculation Functions
@@ -1038,7 +767,6 @@ function calculateEMI() {
     
     document.getElementById('emiResults').style.display = 'block';
     
-    // Add to recent calculations
     addToRecentCalculations('EMI', {
         loan: loanAmount,
         rate: interestRate,
@@ -1059,19 +787,17 @@ function checkLoanEligibility() {
     }
     
     const availableIncome = monthlyIncome - monthlyObligations;
-    const maxEMI = availableIncome * 0.5; // 50% of available income
+    const maxEMI = availableIncome * 0.5;
     
-    // Credit score multiplier
     let creditMultiplier = 1.0;
     if (creditScore === '750-900') creditMultiplier = 1.2;
     else if (creditScore === '650-749') creditMultiplier = 1.0;
     else if (creditScore === '550-649') creditMultiplier = 0.8;
     else creditMultiplier = 0.6;
     
-    // Employment type multiplier
     let empMultiplier = employmentType === 'salaried' ? 1.0 : 0.9;
     
-    const maxLoanAmount = maxEMI * creditMultiplier * empMultiplier * 12 * 20 / 0.08; // Rough calculation
+    const maxLoanAmount = maxEMI * creditMultiplier * empMultiplier * 12 * 20 / 0.08;
     
     let eligibilityStatus = 'Good';
     let statusColor = '#10b981';
@@ -1086,26 +812,26 @@ function checkLoanEligibility() {
     
     const resultsHTML = `
         <div class="eligibility-overview">
-            <div class="eligibility-status" style="background-color: ${statusColor}">
+            <div class="eligibility-status" style="background-color: ${statusColor}; color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
                 <h4>Eligibility Status: ${eligibilityStatus}</h4>
             </div>
         </div>
-        <div class="eligibility-details">
-            <div class="detail-card">
+        <div class="eligibility-details" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div class="result-card">
                 <h4>Maximum EMI Capacity</h4>
-                <div class="detail-value">${formatCurrency(maxEMI)}</div>
+                <div class="result-value">${formatCurrency(maxEMI)}</div>
             </div>
-            <div class="detail-card">
+            <div class="result-card">
                 <h4>Estimated Loan Amount</h4>
-                <div class="detail-value">${formatCurrency(maxLoanAmount)}</div>
+                <div class="result-value">${formatCurrency(maxLoanAmount)}</div>
             </div>
-            <div class="detail-card">
+            <div class="result-card">
                 <h4>Available Monthly Income</h4>
-                <div class="detail-value">${formatCurrency(availableIncome)}</div>
+                <div class="result-value">${formatCurrency(availableIncome)}</div>
             </div>
         </div>
         <div class="recommendations">
-            <h4>Recommendations</h4>
+            <h4>💡 Recommendations</h4>
             <ul>
                 <li>Consider properties up to ${formatCurrency(maxLoanAmount * 1.25)} (with 20% down payment)</li>
                 <li>Maintain credit score above 750 for better rates</li>
@@ -1118,6 +844,221 @@ function checkLoanEligibility() {
     document.getElementById('eligibilityResults').style.display = 'block';
 }
 
+function calculateAffordability() {
+    const annualIncome = parseFloat(document.getElementById('annualIncome').value);
+    const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+    const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+    const emiRatio = parseFloat(document.getElementById('emiRatio').value) || 40;
+    
+    if (!annualIncome) {
+        showNotification('Please enter annual income', 'warning');
+        return;
+    }
+    
+    const monthlyIncome = annualIncome / 12;
+    const availableForEMI = (monthlyIncome - monthlyExpenses) * (emiRatio / 100);
+    const maxLoanAmount = availableForEMI * 12 * 20 / 0.085;
+    const maxPropertyValue = maxLoanAmount + downPayment;
+    
+    const resultsHTML = `
+        <div class="affordability-summary">
+            <div class="summary-card highlight">
+                <h4>You Can Afford Properties Worth</h4>
+                <div class="big-value">${formatCurrency(maxPropertyValue)}</div>
+            </div>
+        </div>
+        <div class="affordability-breakdown">
+            <div class="breakdown-item">
+                <span>Maximum EMI Capacity:</span>
+                <strong>${formatCurrency(availableForEMI)}</strong>
+            </div>
+            <div class="breakdown-item">
+                <span>Maximum Loan Amount:</span>
+                <strong>${formatCurrency(maxLoanAmount)}</strong>
+            </div>
+            <div class="breakdown-item">
+                <span>Down Payment Available:</span>
+                <strong>${formatCurrency(downPayment)}</strong>
+            </div>
+            <div class="breakdown-item">
+                <span>Monthly Income After Expenses:</span>
+                <strong>${formatCurrency(monthlyIncome - monthlyExpenses)}</strong>
+            </div>
+        </div>
+        <div class="recommendations">
+            <h4>💡 Smart Recommendations</h4>
+            <ul>
+                <li>Look for properties in the range of ${formatCurrency(maxPropertyValue * 0.8)} - ${formatCurrency(maxPropertyValue)}</li>
+                <li>Consider increasing down payment to reduce EMI burden</li>
+                <li>Explore areas with good appreciation potential</li>
+                <li>Factor in registration costs (8-10% of property value)</li>
+            </ul>
+        </div>
+    `;
+    
+    document.getElementById('affordabilityResults').innerHTML = resultsHTML;
+    document.getElementById('affordabilityResults').style.display = 'block';
+}
+
+function analyzeRentVsBuy() {
+    const propertyPrice = parseFloat(document.getElementById('propertyPrice').value);
+    const monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
+    const downPayment = parseFloat(document.getElementById('buyDownPayment').value) || 0;
+    const interestRate = parseFloat(document.getElementById('buyInterestRate').value) || 8.5;
+    const analysisPeriod = parseFloat(document.getElementById('analysisPeriod').value) || 10;
+    
+    if (!propertyPrice || !monthlyRent) {
+        showNotification('Please enter property price and monthly rent', 'warning');
+        return;
+    }
+    
+    const loanAmount = propertyPrice - downPayment;
+    const monthlyRate = (interestRate / 100) / 12;
+    const numPayments = 20 * 12;
+    const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                (Math.pow(1 + monthlyRate, numPayments) - 1);
+    
+    const buyingCosts = {
+        downPayment: downPayment,
+        emiTotal: emi * (analysisPeriod * 12),
+        registrationCosts: propertyPrice * 0.08,
+        maintenanceTotal: (propertyPrice * 0.01) * analysisPeriod,
+        total: 0
+    };
+    buyingCosts.total = buyingCosts.downPayment + buyingCosts.emiTotal + 
+                       buyingCosts.registrationCosts + buyingCosts.maintenanceTotal;
+    
+    const rentingCosts = {
+        totalRent: monthlyRent * 12 * analysisPeriod * 1.05,
+        securityDeposit: monthlyRent * 3,
+        brokerageTotal: monthlyRent * 2 * Math.ceil(analysisPeriod / 3),
+        total: 0
+    };
+    rentingCosts.total = rentingCosts.totalRent + rentingCosts.securityDeposit;
+    
+    const difference = buyingCosts.total - rentingCosts.total;
+    const recommendation = difference > 0 ? 'RENT' : 'BUY';
+    const savingsAmount = Math.abs(difference);
+    
+    const resultsHTML = `
+        <div class="comparison-result">
+            <div class="recommendation-card" style="background: ${recommendation === 'RENT' ? '#10b981' : '#6366f1'}; color: white; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1rem;">
+                <h3>💡 Recommendation: ${recommendation}</h3>
+                <p>You can save <strong>${formatCurrency(savingsAmount)}</strong> by choosing to ${recommendation.toLowerCase()}</p>
+            </div>
+        </div>
+        <div class="cost-comparison" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+            <div class="cost-section" style="background: #f9fafb; padding: 1rem; border-radius: 8px;">
+                <h4>🏠 Buying Costs (${analysisPeriod} years)</h4>
+                <div class="breakdown-item">
+                    <span>Down Payment:</span>
+                    <strong>${formatCurrency(buyingCosts.downPayment)}</strong>
+                </div>
+                <div class="breakdown-item">
+                    <span>EMI Payments:</span>
+                    <strong>${formatCurrency(buyingCosts.emiTotal)}</strong>
+                </div>
+                <div class="breakdown-item">
+                    <span>Registration & Costs:</span>
+                    <strong>${formatCurrency(buyingCosts.registrationCosts)}</strong>
+                </div>
+                <div class="breakdown-item">
+                    <span>Maintenance:</span>
+                    <strong>${formatCurrency(buyingCosts.maintenanceTotal)}</strong>
+                </div>
+                <hr>
+                <div class="breakdown-item">
+                    <span><strong>Total Cost:</strong></span>
+                    <strong>${formatCurrency(buyingCosts.total)}</strong>
+                </div>
+            </div>
+            <div class="cost-section" style="background: #f9fafb; padding: 1rem; border-radius: 8px;">
+                <h4>🔑 Renting Costs (${analysisPeriod} years)</h4>
+                <div class="breakdown-item">
+                    <span>Total Rent Payments:</span>
+                    <strong>${formatCurrency(rentingCosts.totalRent)}</strong>
+                </div>
+                <div class="breakdown-item">
+                    <span>Security Deposits:</span>
+                    <strong>${formatCurrency(rentingCosts.securityDeposit)}</strong>
+                </div>
+                <div class="breakdown-item">
+                    <span>Brokerage (Est.):</span>
+                    <strong>${formatCurrency(rentingCosts.brokerageTotal)}</strong>
+                </div>
+                <hr>
+                <div class="breakdown-item">
+                    <span><strong>Total Cost:</strong></span>
+                    <strong>${formatCurrency(rentingCosts.total)}</strong>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('rentVsBuyResults').innerHTML = resultsHTML;
+    document.getElementById('rentVsBuyResults').style.display = 'block';
+}
+
+function findPropertyMatches() {
+    showNotification('AI Property Matching feature coming soon!', 'info');
+}
+
+function calculateROI() {
+    const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+    const rentalIncome = parseFloat(document.getElementById('rentalIncome').value);
+    const maintenanceCost = parseFloat(document.getElementById('maintenanceCost').value) || 0;
+    const appreciation = parseFloat(document.getElementById('appreciation').value) || 8;
+    const holdingPeriod = parseFloat(document.getElementById('holdingPeriod').value) || 10;
+    
+    if (!purchasePrice || !rentalIncome) {
+        showNotification('Please enter purchase price and rental income', 'warning');
+        return;
+    }
+    
+    const annualRent = rentalIncome * 12;
+    const netRentalIncome = annualRent - maintenanceCost;
+    const rentalYield = (netRentalIncome / purchasePrice) * 100;
+    
+    const futureValue = purchasePrice * Math.pow(1 + (appreciation / 100), holdingPeriod);
+    const capitalGains = futureValue - purchasePrice;
+    const totalReturns = (netRentalIncome * holdingPeriod) + capitalGains;
+    const totalROI = ((totalReturns / purchasePrice) * 100);
+    const annualizedROI = (Math.pow((futureValue / purchasePrice), (1 / holdingPeriod)) - 1) * 100;
+    
+    const resultsHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div class="result-card">
+                <h4>Rental Yield</h4>
+                <div class="result-value">${rentalYield.toFixed(1)}%</div>
+            </div>
+            <div class="result-card">
+                <h4>Total ROI</h4>
+                <div class="result-value">${totalROI.toFixed(1)}%</div>
+            </div>
+            <div class="result-card">
+                <h4>Annualized Return</h4>
+                <div class="result-value">${annualizedROI.toFixed(1)}%</div>
+            </div>
+            <div class="result-card">
+                <h4>Future Property Value</h4>
+                <div class="result-value">${formatCurrency(futureValue)}</div>
+            </div>
+        </div>
+        <div class="recommendations">
+            <h4>📊 Investment Analysis</h4>
+            <ul>
+                <li>Annual Rental Income: ${formatCurrency(netRentalIncome)}</li>
+                <li>Total Rental Income (${holdingPeriod} years): ${formatCurrency(netRentalIncome * holdingPeriod)}</li>
+                <li>Expected Capital Gains: ${formatCurrency(capitalGains)}</li>
+                <li>Total Returns: ${formatCurrency(totalReturns)}</li>
+            </ul>
+        </div>
+    `;
+    
+    document.getElementById('roiResults').innerHTML = resultsHTML;
+    document.getElementById('roiResults').style.display = 'block';
+}
+
 // Utility Functions
 function formatCurrency(amount) {
     if (amount >= 10000000) {
@@ -1125,7 +1066,7 @@ function formatCurrency(amount) {
     } else if (amount >= 100000) {
         return `₹${(amount / 100000).toFixed(1)}L`;
     } else {
-        return `₹${amount.toLocaleString('en-IN')}`;
+        return `₹${Math.round(amount).toLocaleString('en-IN')}`;
     }
 }
 
@@ -1141,14 +1082,12 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
-    // Auto remove after 5 seconds
     setTimeout(() => {
         if (notification.parentNode) {
             notification.remove();
         }
     }, 5000);
     
-    // Close button functionality
     notification.querySelector('.notification-close').addEventListener('click', () => {
         notification.remove();
     });
@@ -1168,30 +1107,17 @@ function addToRecentCalculations(type, data) {
         data: data,
         timestamp: new Date().toISOString()
     });
-    
-    // Keep only last 10 calculations
     recent = recent.slice(0, 10);
     localStorage.setItem('recent_calculations', JSON.stringify(recent));
 }
 
 function loadUserPreferences() {
-    // Load user preferences from localStorage
     const preferences = JSON.parse(localStorage.getItem('user_preferences') || '{}');
-    // Apply preferences
-}
-
-function checkForUpdates() {
-    // Check for app updates
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({command: 'checkForUpdates'});
-    }
 }
 
 function showWelcomeMessage() {
-    // Show welcome message for first-time users
     setTimeout(() => {
         showNotification('Welcome to Magic AI ✦! Your complete real estate toolkit is ready.', 'success');
-        // Auto-open chat with welcome message
         setTimeout(() => {
             if (chatWidget.style.display !== 'flex') {
                 openChatWidget();
@@ -1201,10 +1127,8 @@ function showWelcomeMessage() {
 }
 
 function initializeTool(toolName) {
-    // Initialize specific tool functionality
     switch(toolName) {
         case 'emi-calculator':
-            // Add real-time calculation
             ['loanAmount', 'interestRate', 'loanTenure'].forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
@@ -1217,6 +1141,10 @@ function initializeTool(toolName) {
         default:
             break;
     }
+}
+
+function initializeTools() {
+    console.log('Tools initialized');
 }
 
 function debounce(func, wait) {
@@ -1243,11 +1171,21 @@ function handleScroll() {
 }
 
 function handleResize() {
-    // Handle responsive behavior
     if (window.innerWidth > 768) {
         navMenu.classList.remove('active');
     }
 }
+
+// Export functions for global access
+window.openTool = openTool;
+window.toggleChatWidget = toggleChatWidget;
+window.sendQuickMessage = sendQuickMessage;
+window.calculateEMI = calculateEMI;
+window.checkLoanEligibility = checkLoanEligibility;
+window.calculateAffordability = calculateAffordability;
+window.analyzeRentVsBuy = analyzeRentVsBuy;
+window.findPropertyMatches = findPropertyMatches;
+window.calculateROI = calculateROI;
 
 // Initialize everything when DOM is loaded
 if (document.readyState === 'loading') {
@@ -1266,9 +1204,9 @@ if (document.readyState === 'loading') {
     setupToolCategories();
 }
 
-// Export functions for global access
-window.openTool = openTool;
-window.toggleChatWidget = toggleChatWidget;
-window.sendQuickMessage = sendQuickMessage;
-window.calculateEMI = calculateEMI;
-window.checkLoanEligibility = checkLoanEligibility;
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .then(registration => console.log('SW registered'))
+        .catch(error => console.log('SW registration failed'));
+}
