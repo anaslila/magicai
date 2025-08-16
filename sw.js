@@ -1,4 +1,4 @@
-// Magic AI ✦ Service Worker
+// Magic AI Service Worker
 // Version 1.0.0
 // This service worker handles caching, offline functionality, and app updates
 
@@ -12,17 +12,15 @@ const FILES_TO_CACHE = [
   '/styles.css',
   '/script.js',
   '/manifest.json',
-  'https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png',
+  'https://i.postimg.cc/Px6Z8jZ9/Your-paragraph-text-1-removebg-preview.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-  // Add other critical assets
+  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
 ];
 
 // API URLs that should be cached
 const API_CACHE_URLS = [
   '/api/',
-  'https://api.magicai.com/',
-  // Add your API endpoints here
+  'https://api.magicai.com/'
 ];
 
 // Install Event - Cache core files
@@ -36,7 +34,6 @@ self.addEventListener('install', (event) => {
         return cache.addAll(FILES_TO_CACHE);
       })
       .then(() => {
-        // Skip waiting to activate immediately
         return self.skipWaiting();
       })
       .catch((error) => {
@@ -59,7 +56,6 @@ self.addEventListener('activate', (event) => {
       }));
     })
     .then(() => {
-      // Take control of all pages immediately
       return self.clients.claim();
     })
   );
@@ -92,14 +88,12 @@ function handleApiRequest(event) {
     .then((cache) => {
       return fetch(event.request)
         .then((response) => {
-          // Store successful responses in cache
           if (response.status === 200) {
             cache.put(event.request.url, response.clone());
           }
           return response;
         })
         .catch(() => {
-          // Return cached response if network fails
           return cache.match(event.request);
         });
     });
@@ -109,7 +103,6 @@ function handleApiRequest(event) {
 function handleNavigationRequest(event) {
   return fetch(event.request)
     .catch(() => {
-      // Return cached index.html for offline navigation
       return caches.open(CACHE_NAME)
         .then((cache) => {
           return cache.match('/index.html');
@@ -124,25 +117,20 @@ function handleResourceRequest(event) {
       return cache.match(event.request)
         .then((cachedResponse) => {
           if (cachedResponse) {
-            // Return cached version
             return cachedResponse;
           }
           
-          // Fetch from network and cache
           return fetch(event.request)
             .then((response) => {
-              // Don't cache non-successful responses
               if (!response || response.status !== 200 || response.type !== 'basic') {
                 return response;
               }
               
-              // Clone response before caching
               const responseToCache = response.clone();
               cache.put(event.request, responseToCache);
               return response;
             })
             .catch(() => {
-              // Return offline fallback for images
               if (event.request.destination === 'image') {
                 return new Response(
                   '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="#f3f4f6"/><text x="100" y="100" text-anchor="middle" dy=".3em" fill="#6b7280">Offline</text></svg>',
@@ -175,11 +163,9 @@ self.addEventListener('sync', (event) => {
 // Sync offline calculations when back online
 async function syncCalculations() {
   try {
-    // Get offline calculations from IndexedDB
     const calculations = await getOfflineCalculations();
     
     for (const calc of calculations) {
-      // Send to server
       await fetch('/api/calculations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -187,7 +173,6 @@ async function syncCalculations() {
       });
     }
     
-    // Clear offline storage after successful sync
     await clearOfflineCalculations();
     console.log('[ServiceWorker] Calculations synced successfully');
   } catch (error) {
@@ -220,10 +205,10 @@ self.addEventListener('push', (event) => {
   console.log('[ServiceWorker] Push Received');
   
   let notificationData = {
-    title: 'Magic AI ✦',
+    title: 'Magic AI',
     body: 'You have a new notification',
-    icon: 'https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png',
-    badge: 'https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png',
+    icon: 'https://i.postimg.cc/Px6Z8jZ9/Your-paragraph-text-1-removebg-preview.png',
+    badge: 'https://i.postimg.cc/Px6Z8jZ9/Your-paragraph-text-1-removebg-preview.png',
     tag: 'magicai-notification',
     requireInteraction: true,
     actions: [
@@ -262,18 +247,15 @@ self.addEventListener('notificationclick', (event) => {
     return;
   }
   
-  // Open the app
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then((clientList) => {
-        // If app is already open, focus it
         for (const client of clientList) {
           if (client.url.includes(self.registration.scope) && 'focus' in client) {
             return client.focus();
           }
         }
         
-        // Otherwise open new window
         if (clients.openWindow) {
           return clients.openWindow('/');
         }
@@ -312,10 +294,8 @@ async function checkForUpdates() {
     const response = await fetch('/manifest.json', { cache: 'no-cache' });
     const manifest = await response.json();
     
-    // Compare versions or timestamps
     const currentVersion = await getCurrentVersion();
     if (manifest.version !== currentVersion) {
-      // Notify main thread about update
       const clients = await self.clients.matchAll();
       clients.forEach(client => {
         client.postMessage({
@@ -462,11 +442,10 @@ async function fetchPropertyUpdates() {
     const response = await fetch('/api/property-updates');
     const updates = await response.json();
     
-    // Store updates and notify user if important
     if (updates.length > 0) {
-      await self.registration.showNotification('Magic AI ✦', {
+      await self.registration.showNotification('Magic AI', {
         body: `${updates.length} new property updates available`,
-        icon: 'https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png',
+        icon: 'https://i.postimg.cc/Px6Z8jZ9/Your-paragraph-text-1-removebg-preview.png',
         tag: 'property-updates'
       });
     }
@@ -475,17 +454,4 @@ async function fetchPropertyUpdates() {
   }
 }
 
-// Handle app shortcuts
-self.addEventListener('notificationclick', (event) => {
-  if (event.notification.tag === 'emi-calculator') {
-    event.waitUntil(
-      clients.openWindow('/?tool=emi-calculator')
-    );
-  } else if (event.notification.tag === 'property-match') {
-    event.waitUntil(
-      clients.openWindow('/?tool=property-matchmaker')
-    );
-  }
-});
-
-console.log('[ServiceWorker] Magic AI ✦ Service Worker loaded successfully');
+console.log('[ServiceWorker] Magic AI Service Worker loaded successfully');
