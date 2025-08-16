@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic AI ✦ - Complete Real Estate AI Tools</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Magic AI ✦">
+    <meta name="description" content="Complete Real Estate AI Tools for Buyers, Sellers, Investors & Agents">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png" alt="Magic AI">
+                    <span>Magic AI ✦</span>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav class="nav-menu" id="navMenu">
+                    <a href="#home">Home</a>
+                    <a href="#tools">Tools</a>
+                    <a href="#features">Features</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Install App Banner -->
+    <div class="install-banner" id="installBanner" style="display: none;">
+        <div class="container">
+            <div class="install-content">
+                <i class="fas fa-download"></i>
+                <span>Install Magic AI ✦ for better experience</span>
+                <button class="install-btn" id="installBtn">Install</button>
+                <button class="close-banner" id="closeBanner">×</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-logo">
+                    <img src="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png" alt="Magic AI">
+                </div>
+                <h1>Magic AI ✦</h1>
+                <p class="hero-tagline">Your Complete Real Estate AI Toolkit</p>
+                <p class="hero-subtitle">Empowering Buyers, Sellers, Investors & Agents with AI-powered tools</p>
+                <div class="hero-buttons">
+                    <button class="cta-btn primary" onclick="document.getElementById('tools').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-magic"></i> Explore AI Tools
+                    </button>
+                    <button class="cta-btn secondary" id="heroInstallBtn">
+                        <i class="fas fa-mobile-alt"></i> Install App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Categories -->
+    <section id="tools" class="tools-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>AI-Powered Real Estate Tools</h2>
+                <p>Everything you need for smart real estate decisions</p>
+            </div>
+            
+            <!-- Tool Categories -->
+            <div class="tool-categories">
+                <div class="category-tabs">
+                    <button class="tab-btn active" data-category="buyer">🔑 Buyer Tools</button>
+                    <button class="tab-btn" data-category="investor">📊 Investor Tools</button>
+                    <button class="tab-btn" data-category="seller">🏡 Seller Tools</button>
+                    <button class="tab-btn" data-category="ai">🤖 AI Assistant</button>
+                    <button class="tab-btn" data-category="extras">📱 Extras</button>
+                </div>
+
+                <!-- Buyer Tools -->
+                <div class="tool-grid" id="buyer-tools">
+                    <div class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <h3>EMI Calculator</h3>
+                        <p>Quick monthly loan breakdown with detailed analysis</p>
+                        <button class="tool-btn" onclick="openTool('emi-calculator')">
+                            <i class="fas fa-calculator"></i> Calculate EMI
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">✅</div>
+                        <h3>Loan Eligibility Checker</h3>
+                        <p>Based on income, liabilities, and credit score</p>
+                        <button class="tool-btn" onclick="openTool('loan-eligibility')">
+                            <i class="fas fa-check-circle"></i> Check Eligibility
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">💰</div>
+                        <h3>Affordability Calculator</h3>
+                        <p>Discover properties you can afford with your salary</p>
+                        <button class="tool-btn" onclick="openTool('affordability')">
+                            <i class="fas fa-money-bill-wave"></i> Check Affordability
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🏠</div>
+                        <h3>Rent vs Buy Analyzer</h3>
+                        <p>Compare long-term costs of renting vs owning</p>
+                        <button class="tool-btn" onclick="openTool('rent-vs-buy')">
+                            <i class="fas fa-balance-scale"></i> Analyze Options
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card featured">
+                        <div class="tool-icon">🎯</div>
+                        <h3>AI Property Matchmaker</h3>
+                        <p>AI suggests properties based on budget, location & commute</p>
+                        <button class="tool-btn" onclick="openTool('property-matchmaker')">
+                            <i class="fas fa-heart"></i> Find Matches
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🗺️</div>
+                        <h3>Neighborhood Insights</h3>
+                        <p>Safety, schools, hospitals, metro, future developments</p>
+                        <button class="tool-btn" onclick="openTool('neighborhood-insights')">
+                            <i class="fas fa-map-marked-alt"></i> Explore Area
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">⚖️</div>
+                        <h3>Property Comparison</h3>
+                        <p>Side-by-side analysis of 2-3 properties</p>
+                        <button class="tool-btn" onclick="openTool('property-comparison')">
+                            <i class="fas fa-columns"></i> Compare Properties
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📈</div>
+                        <h3>Price Prediction Tool</h3>
+                        <p>AI predicts appreciation trends for localities</p>
+                        <button class="tool-btn" onclick="openTool('price-prediction')">
+                            <i class="fas fa-chart-line"></i> Predict Prices
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Investor Tools -->
+                <div class="tool-grid" id="investor-tools" style="display: none;">
+                    <div class="tool-card">
+                        <div class="tool-icon">💹</div>
+                        <h3>ROI / Yield Calculator</h3>
+                        <p>Rental yield + capital appreciation estimates</p>
+                        <button class="tool-btn" onclick="openTool('roi-calculator')">
+                            <i class="fas fa-percentage"></i> Calculate ROI
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card featured">
+                        <div class="tool-icon">🗺️</div>
+                        <h3>Growth Areas Heatmap</h3>
+                        <p>AI highlights top investment zones</p>
+                        <button class="tool-btn" onclick="openTool('growth-heatmap')">
+                            <i class="fas fa-fire"></i> View Heatmap
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🏘️</div>
+                        <h3>Rental Income Forecaster</h3>
+                        <p>Predict rental growth in any locality</p>
+                        <button class="tool-btn" onclick="openTool('rental-forecaster')">
+                            <i class="fas fa-forecast"></i> Forecast Rental
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🚧</div>
+                        <h3>Future Development Tracker</h3>
+                        <p>Upcoming highways, metro, malls impacting value</p>
+                        <button class="tool-btn" onclick="openTool('development-tracker')">
+                            <i class="fas fa-road"></i> Track Development
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Seller/Agent Tools -->
+                <div class="tool-grid" id="seller-tools" style="display: none;">
+                    <div class="tool-card featured">
+                        <div class="tool-icon">💰</div>
+                        <h3>AI Property Valuation</h3>
+                        <p>Instant market-based property estimates</p>
+                        <button class="tool-btn" onclick="openTool('property-valuation')">
+                            <i class="fas fa-tags"></i> Get Valuation
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📝</div>
+                        <h3>Property Ad Generator</h3>
+                        <p>AI-generated listing titles and descriptions</p>
+                        <button class="tool-btn" onclick="openTool('ad-generator')">
+                            <i class="fas fa-edit"></i> Generate Ad
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🎯</div>
+                        <h3>Lead Qualification Bot</h3>
+                        <p>AI filters genuine buyers from casual ones</p>
+                        <button class="tool-btn" onclick="openTool('lead-qualification')">
+                            <i class="fas fa-user-check"></i> Qualify Leads
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📄</div>
+                        <h3>Smart Document Explainer</h3>
+                        <p>Plain language explanations of RERA docs & agreements</p>
+                        <button class="tool-btn" onclick="openTool('document-explainer')">
+                            <i class="fas fa-file-alt"></i> Explain Docs
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Assistant Tools -->
+                <div class="tool-grid" id="ai-tools" style="display: none;">
+                    <div class="tool-card featured">
+                        <div class="tool-icon">🤖</div>
+                        <h3>AI Chatbot</h3>
+                        <p>Ask questions like "Which areas under 1 Cr have good schools?"</p>
+                        <button class="tool-btn" onclick="toggleChatWidget()">
+                            <i class="fas fa-comments"></i> Chat with AI
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🎤</div>
+                        <h3>Voice Search</h3>
+                        <p>"Show me 2BHK flats in Bandra under 1.5 Cr"</p>
+                        <button class="tool-btn" onclick="openTool('voice-search')">
+                            <i class="fas fa-microphone"></i> Voice Search
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🔍</div>
+                        <h3>Document Risk Checker</h3>
+                        <p>Upload docs → AI flags potential legal issues</p>
+                        <button class="tool-btn" onclick="openTool('risk-checker')">
+                            <i class="fas fa-shield-alt"></i> Check Documents
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🏦</div>
+                        <h3>Loan Optimizer</h3>
+                        <p>Compare banks and find cheapest EMI/tenure</p>
+                        <button class="tool-btn" onclick="openTool('loan-optimizer')">
+                            <i class="fas fa-optimize"></i> Optimize Loan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Extra Features -->
+                <div class="tool-grid" id="extras-tools" style="display: none;">
+                    <div class="tool-card">
+                        <div class="tool-icon">🔔</div>
+                        <h3>Saved Searches & Alerts</h3>
+                        <p>Get notified when properties match your criteria</p>
+                        <button class="tool-btn" onclick="openTool('search-alerts')">
+                            <i class="fas fa-bell"></i> Set Alerts
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card featured">
+                        <div class="tool-icon">🌐</div>
+                        <h3>360° Virtual Tours</h3>
+                        <p>Virtual walkthrough with AI narration</p>
+                        <button class="tool-btn" onclick="openTool('virtual-tours')">
+                            <i class="fas fa-vr-cardboard"></i> Take Tour
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">🔧</div>
+                        <h3>Smart Filters</h3>
+                        <p>"Near metro", "Good for families", "Investment hotspot"</p>
+                        <button class="tool-btn" onclick="openTool('smart-filters')">
+                            <i class="fas fa-filter"></i> Use Filters
+                        </button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">💕</div>
+                        <h3>Wishlist Sharing</h3>
+                        <p>Family/friends can comment on shortlisted properties</p>
+                        <button class="tool-btn" onclick="openTool('wishlist-sharing')">
+                            <i class="fas fa-share-alt"></i> Share Wishlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <div class="chat-avatar">
+                <img src="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png" alt="AI Assistant">
+            </div>
+            <div class="chat-info">
+                <h4>Magic AI Assistant</h4>
+                <span class="status">Online</span>
+            </div>
+            <button class="chat-minimize" id="chatMinimize">−</button>
+            <button class="chat-close" id="chatClose">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <img src="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png" alt="AI">
+                </div>
+                <div class="message-content">
+                    <p>Hello! I'm your AI real estate assistant. Ask me anything about properties, loans, investments, or use our tools!</p>
+                    <div class="quick-actions">
+                        <button class="quick-btn" onclick="sendQuickMessage('Show me properties under 50 lakhs')">Properties under 50L</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('Calculate EMI for 30 lakhs')">EMI Calculator</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('Best investment areas in Mumbai')">Investment Areas</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Ask me anything about real estate...">
+            <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+            <button id="voiceInput"><i class="fas fa-microphone"></i></button>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chatToggle">
+        <img src="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png" alt="AI Assistant">
+        <span class="chat-notification" id="chatNotification">1</span>
+    </button>
+
+    <!-- Tool Modal -->
+    <div class="modal" id="toolModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tool Name</h3>
+                <button class="modal-close" id="modalClose">×</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Tool content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Magic AI ✦?</h2>
+                <p>Powered by cutting-edge AI technology</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Get instant results with our AI-powered calculations and predictions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Highly Accurate</h3>
+                    <p>Machine learning algorithms trained on millions of real estate data points</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Optimized</h3>
+                    <p>Works seamlessly on all devices. Install as an app for better experience</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>Your data is encrypted and never shared with third parties</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🆓</div>
+                    <h3>Free to Use</h3>
+                    <p>All basic tools are completely free with no hidden charges</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Expert Support</h3>
+                    <p>24/7 AI assistant plus human expert support when you need it</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="https://i.postimg.cc/YSJdVQjb/Your-paragraph-text-1.png" alt="Magic AI">
+                        <span>Magic AI ✦</span>
+                    </div>
+                    <p>Your complete real estate AI toolkit for smarter property decisions.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Tools</h4>
+                    <a href="#" onclick="openTool('emi-calculator')">EMI Calculator</a>
+                    <a href="#" onclick="openTool('property-matchmaker')">Property Matchmaker</a>
+                    <a href="#" onclick="openTool('roi-calculator')">ROI Calculator</a>
+                    <a href="#" onclick="openTool('property-valuation')">Property Valuation</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <a href="#" onclick="toggleChatWidget()">AI Assistant</a>
+                    <a href="#" onclick="openTool('voice-search')">Voice Search</a>
+                    <a href="#" onclick="openTool('virtual-tours')">Virtual Tours</a>
+                    <a href="#" onclick="openTool('neighborhood-insights')">Neighborhood Insights</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="#contact">Contact Us</a>
+                    <a href="#">Help Center</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Magic AI ✦. All rights reserved. | Built with ❤️ for real estate professionals</p>
+                <div class="install-footer">
+                    <button class="install-footer-btn" id="footerInstallBtn">
+                        <i class="fas fa-download"></i> Install App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- PWA Installation Script -->
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+    </script>
+</body>
+</html>
